@@ -117,7 +117,7 @@ class PlayState(GameState):
           is_vertical_reverse = (new_direction[1] + check_direction[1] == 0) and (new_direction[1] != 0)
 
           # Only allow a maximum of one buffered input
-          if not (is_horizontal_reverse or is_vertical_reverse) and len(self.direction_queue) < 1:
+          if not (is_horizontal_reverse or is_vertical_reverse) and len(self.direction_queue) < 2:
             self.direction_queue.append(new_direction)
 
   def update(self):
