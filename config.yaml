@@ -10,12 +10,17 @@ grid:
 colors:
   background: "#000000"
   grid: "#111111"
-  snake: "#00FF00"
-  food: "#FF0000"
-  wall: "#FFFFFF"
+  select: "#00FF00"
+  snake: "dark-green"
+  wall: "#C8102E"
   text: "#FFFFFF"
 
 wall: 0.2
 
+path:
+  dir: "levels"
+  level: "mexico"
+
 game:
-  speed: 10
+  speed: 7
+  width: 2
