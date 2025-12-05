@@ -14,15 +14,15 @@ class Game:
 
     pygame.init()
     pygame.font.init()
-    self.width = self.config["window"]["width"]
-    self.height = self.config["window"]["height"]
+    self.width = self.config.window.width
+    self.height = self.config.window.height
     self.screen = pygame.display.set_mode((self.width, self.height))
-    pygame.display.set_caption(self.config["window"]["title"])
+    pygame.display.set_caption(self.config.window.title)
     self.clock = pygame.time.Clock()
     self.font = pygame.font.SysFont("Arial", 24)
 
     self.running = True
-    self.state = MenuState(self)
+    self.state = MenuState(self, self.config)
 
   def change_state(self, new_state):
     self.state = new_state
@@ -39,10 +39,7 @@ class Game:
       self.state.draw()
 
       pygame.display.flip()
-      self.clock.tick(self.config["game"]["speed"])
-
-    pygame.quit()
-    sys.exit()
+      self.clock.tick(self.config.game.speed)  # type: ignore
 
     pygame.quit()
     sys.exit()

@@ -9,8 +9,5 @@
     "editor.detectIndentation": false,
     "editor.defaultFormatter": "charliermarsh.ruff"
   },
-  "isort.args": [
-    "--profile",
-    "black"
-  ],
+  "cSpell.enabled": false
 }

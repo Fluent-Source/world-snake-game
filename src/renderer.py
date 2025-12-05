@@ -2,11 +2,13 @@ import math
 
 import pygame
 
+from src.utils import Config
+
 
 class Renderer:
   """Modern renderer with visual enhancements."""
 
-  def __init__(self, screen, config, cell_width, cell_height, map_width, map_height, skip_segments):
+  def __init__(self, screen, config: Config, cell_width, cell_height, map_width, map_height, skip_segments):
     self.screen = screen
     self.config = config
     self.cell_width = cell_width
@@ -20,9 +22,13 @@ class Renderer:
       if is_apple:
         original_image = pygame.image.load(f"assets/{filename}").convert_alpha()
       else:
-        original_image = pygame.image.load(f"assets/{config['colors']['snake']}/{filename}").convert_alpha()
+        original_image = pygame.image.load(f"assets/{config.colors.snake}/{filename}").convert_alpha()
       scale = min(self.cell_width, self.cell_height) / original_image.get_width()
       return pygame.transform.rotozoom(original_image, 0, scale * scale_factor)
+
+    # Small font for coordinate labels
+    font_size = max(10, int(min(cell_width, cell_height) / 2.5))
+    self.grid_font = pygame.font.SysFont("Arial", font_size)
 
     # Load Food Image
     self.apple_image = _load_asset("apple.png", 0.9, True)
@@ -136,9 +142,7 @@ class Renderer:
       return
 
     wall_color = (
-      self._hex_to_rgb(self.config["colors"]["wall"])
-      if isinstance(self.config["colors"]["wall"], str)
-      else self.config["colors"]["wall"]
+      self._hex_to_rgb(self.config.colors.wall) if isinstance(self.config.colors.wall, str) else self.config.colors.wall
     )
 
     # Helper to calculate the pixel centre of a given grid coordinate
@@ -148,8 +152,8 @@ class Renderer:
         cy * self.cell_height + self.cell_height // 2,
       )
 
-    # Thickness of the wall segment in pixels – tweak as desired (20% of a cell)
-    thickness = max(1, int(min(self.cell_width, self.cell_height) * self.config["wall"]))
+    # Thickness of the wall segment in pixels
+    thickness = max(1, int(min(self.cell_width, self.cell_height) * self.config.wall))
 
     walls_set = set(walls)
     drawn_segments = set()  # keep track of already drawn centre pairs to avoid duplicates
@@ -186,7 +190,7 @@ class Renderer:
 
   def draw_grid(self, map_width, map_height):
     """Draw a subtle background grid."""
-    grid_color = tuple(min(255, c + 10) for c in self._hex_to_rgb(self.config["colors"]["grid"]))
+    grid_color = tuple(min(255, c + 10) for c in self._hex_to_rgb(self.config.colors.grid))
 
     for x in range(map_width + 1):
       pygame.draw.line(
@@ -203,6 +207,20 @@ class Renderer:
         (0, y * self.cell_height),
         (map_width * self.cell_width, y * self.cell_height),
       )
+
+    # Draw coordinate numbers – x along top, y along left.
+    num_color = self._hex_to_rgb(self.config.colors.grid)
+
+    # X-coordinates
+    for x in range(map_width):
+      label = self.grid_font.render(str(x), True, num_color)
+      # Position a tiny margin inside the cell
+      self.screen.blit(label, (x * self.cell_width + 2, 2))
+
+    # Y-coordinates
+    for y in range(map_height):
+      label = self.grid_font.render(str(y), True, num_color)
+      self.screen.blit(label, (2, y * self.cell_height + 2))
 
   def _hex_to_rgb(self, hex_color):
     """Convert hex color to RGB tuple."""

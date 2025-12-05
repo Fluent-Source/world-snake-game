@@ -4,12 +4,13 @@ window:
   title: "Snake Game"
 
 grid:
+  draw: False
   width: 20
   height: 20
 
 colors:
   background: "#000000"
-  grid: "#111111"
+  grid: "#EEEEEE"
   select: "#00FF00"
   snake: "dark-green"
   wall: "#C8102E"
@@ -22,5 +23,5 @@ path:
   level: "mexico"
 
 game:
-  speed: 7
+  speed: 6
   width: 2
