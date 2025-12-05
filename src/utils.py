@@ -61,8 +61,8 @@ def load_config(path: str = "config.yaml") -> Optional[Config]:
       to *stdout* so that the caller can decide how to proceed.
   """
   try:
-    with open(path, "r", encoding="utf-8") as fh:
-      raw = yaml.safe_load(fh) or {}
+    with open(path, "r", encoding="utf-8") as file:
+      raw = yaml.safe_load(file)
     return Config(**raw)
 
   except FileNotFoundError:
