@@ -1,6 +1,6 @@
 window:
-  width: 800
-  height: 600
+  width: 640
+  height: 640
   title: "Snake Game"
 
 grid:
@@ -9,10 +9,13 @@ grid:
 
 colors:
   background: "#000000"
+  grid: "#111111"
   snake: "#00FF00"
   food: "#FF0000"
   wall: "#FFFFFF"
   text: "#FFFFFF"
+
+wall: 0.2
 
 game:
   speed: 10
