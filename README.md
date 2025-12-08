@@ -1,6 +1,6 @@
 # Snake Game Around the World
 
-A small game that implements the classic Snake with custom maps.
+A small game that implements the classic Snake Game with custom maps.
 
 Made as a fun project to show off Fluent Source in Python.
 
