@@ -26,7 +26,7 @@ class ColorsSettings(BaseModel):
 
 
 class PathSettings(BaseModel):
-  dir: str  # noqa: A003 – keep key name identical to YAML for convenience
+  directory: str
   level: str
 
 

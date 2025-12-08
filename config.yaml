@@ -1,7 +1,7 @@
 window:
   width: 720
   height: 640
-  title: "Snake Game"
+  title: "Snake Game World"
 
 grid:
   draw: False
@@ -19,8 +19,8 @@ colors:
 wall: 0.2
 
 path:
-  dir: "levels"
-  level: "mexico"
+  directory: "levels"
+  level: "default"
 
 game:
   speed: 6

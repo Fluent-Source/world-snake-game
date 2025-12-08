@@ -35,6 +35,23 @@ class MenuState(GameState):
     self.selected_index = 0
     self.config = config
 
+    # --- Level selection setup ---------------------------------------------
+    levels_file = os.path.join(self.config.path.directory, "levels.txt")
+    self.levels: list[str] = []
+    try:
+      with open(levels_file, "r", encoding="utf-8") as file:
+        self.levels = [line.strip() for line in file if line.strip()]
+    except FileNotFoundError:
+      # Fallback to a single level defined in the YAML if *levels.txt* is missing
+      self.levels = [self.config.path.level]
+
+    # Ensure the originally configured level is present, else default to first
+    if self.config.path.level in self.levels:
+      self.level_index = self.levels.index(self.config.path.level)
+    else:
+      self.level_index = 0
+      self.config.path.level = self.levels[0]
+
   def handle_input(self, events):
     for event in events:
       if event.type == pygame.KEYDOWN:
@@ -42,8 +59,19 @@ class MenuState(GameState):
           self.selected_index = (self.selected_index - 1) % len(self.options)
         elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
           self.selected_index = (self.selected_index + 1) % len(self.options)
+        # --- Level cycling ---------------------------------------------------
+        elif event.key == pygame.K_LEFT or event.key == pygame.K_a:
+          if self.levels:  # avoid ZeroDivisionError just in case
+            self.level_index = (self.level_index - 1) % len(self.levels)
+            self.config.path.level = self.levels[self.level_index]
+        elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
+          if self.levels:
+            self.level_index = (self.level_index + 1) % len(self.levels)
+            self.config.path.level = self.levels[self.level_index]
+        # --------------------------------------------------------------------
         elif event.key == pygame.K_RETURN or event.key == pygame.K_SPACE:
           if self.selected_index == 0:
+            # Ensure PlayState uses the current level stored in the config
             self.manager.change_state(PlayState(self.manager, self.config))
           elif self.selected_index == 1:
             self.manager.running = False
@@ -61,6 +89,12 @@ class MenuState(GameState):
       rect = text.get_rect(center=(self.manager.width / 2, self.manager.height / 2 + i * 50))
       self.screen.blit(text, rect)
 
+    # --- Current level display ---------------------------------------------
+    if self.levels:
+      level_text = self.option_font.render(f"Level: {self.levels[self.level_index]}", True, self.config.colors.text)
+      level_rect = level_text.get_rect(center=(self.manager.width / 2, self.manager.height * 0.8))
+      self.screen.blit(level_text, level_rect)
+
 
 class PlayState(GameState):
   def __init__(self, manager, config: Config):
@@ -68,7 +102,7 @@ class PlayState(GameState):
     self.config = config
     self.cell_width = self.config.grid.width
     self.cell_height = self.config.grid.height
-    self.level_dir = os.path.join(self.config.path.dir, self.config.path.level)
+    self.level_dir = os.path.join(self.config.path.directory, self.config.path.level)
 
     self.map = Map(self.level_dir)
     self.snake = Snake(self.map.start_pos, self.config.game.width)
@@ -105,7 +139,7 @@ class PlayState(GameState):
         print(f"Error loading background image: {e}")
 
   def on_exit(self):
-    """Called by Game when this state is replaced – stop background watcher."""
+    """Called by Game when this state is replaced. Stop background watcher."""
     if hasattr(self, "_watcher"):
       self._watcher.stop()
 
