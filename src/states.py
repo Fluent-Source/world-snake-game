@@ -59,16 +59,14 @@ class MenuState(GameState):
           self.selected_index = (self.selected_index - 1) % len(self.options)
         elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
           self.selected_index = (self.selected_index + 1) % len(self.options)
-        # --- Level cycling ---------------------------------------------------
         elif event.key == pygame.K_LEFT or event.key == pygame.K_a:
-          if self.levels:  # avoid ZeroDivisionError just in case
+          if self.levels:
             self.level_index = (self.level_index - 1) % len(self.levels)
             self.config.path.level = self.levels[self.level_index]
         elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
           if self.levels:
             self.level_index = (self.level_index + 1) % len(self.levels)
             self.config.path.level = self.levels[self.level_index]
-        # --------------------------------------------------------------------
         elif event.key == pygame.K_RETURN or event.key == pygame.K_SPACE:
           if self.selected_index == 0:
             # Ensure PlayState uses the current level stored in the config
